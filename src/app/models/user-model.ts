@@ -1,5 +1,5 @@
 export interface myUser {
-  _id?: string;
-  name: string;
-  description: string;
+  _id?: String;
+  name: String;
+  description: String;
 }

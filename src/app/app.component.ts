@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ServiceUsersService } from './service/service-users.service';
 import { myUser } from './models/user-model';
 
@@ -8,16 +8,17 @@ import { myUser } from './models/user-model';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  @ViewChild('nombreInput') html: any;
   title = "Actividad2"
+  userEdit: myUser = { name: '', description: '' };
   newUser: myUser = { name: '', description: '' };
+  editar: boolean = false
+
+  selectedUser: myUser | null = null;
 
   constructor(public userService: ServiceUsersService) { }
 
   ngOnInit() {
-    this.getAllMyUsers();
-  }
-
-  getAllMyUsers() {
     this.userService.getAllUsers()
   }
 
@@ -26,4 +27,23 @@ export class AppComponent {
     this.newUser.name = '';
     this.newUser.description = '';
   }
+
+  sacarEditar(user: myUser) {
+    this.selectedUser = user;
+    this.editar = !this.editar;
+  }
+
+  modificarUser(user: myUser, nombreInput: String, descrip: String) {
+    var us: myUser = user
+
+    us.name = nombreInput
+    us.description = descrip
+
+    console.log(us)
+
+    this.userService.modificarUsuario(us)
+    this.sacarEditar(user)
+  }
+
+
 }

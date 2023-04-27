@@ -1,7 +1,6 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { myUser } from '../models/user-model';
 
 @Injectable({
@@ -11,35 +10,52 @@ export class ServiceUsersService {
   myUser: myUser[] = []
   newUser: myUser = { name: '', description: '' }
 
-
-
-  private apiUrl = 'http://localhost:8000/prueba'
-
   constructor(private http: HttpClient) { }
 
   getAllUsers() {
-
-    this.http.get<myUser[]>(this.apiUrl).subscribe(userAux => {
+    var url = "http://localhost:8000/datos"
+    this.http.get<myUser[]>(url).subscribe(userAux => {
       this.myUser = userAux;
-      console.log(this.myUser)
     });
-
 
   }
 
   createMyUser(user: myUser) {
-    this.http.post<myUser>(this.apiUrl, user).subscribe(userAux => {
+    var url = "http://localhost:8000/subir"
+    this.http.post<myUser>(url, user).subscribe(userAux => {
       this.myUser.push(userAux);
+      this.getAllUsers()
     });
-    this.getAllUsers()
+
   }
 
   borrarUno(id: String) {
-    console.log(id)
-    const url = `${this.apiUrl}/${id}`
+    var url = `http://localhost:8000/borrar/${id}`
+
     console.log(url)
-    this.http.delete<myUser>(url).subscribe({
+    this.http.delete<myUser>(url).subscribe(user => {
+      this.myUser.splice(this.myUser.indexOf(user), 1);
+      this.getAllUsers()
+    });
+
+  }
+
+  modificarUsuario(user: myUser) {
+
+    var url = `http://localhost:8000/modificar/${user._id}`
+
+    this.http.put<myUser>(url, user).subscribe(userAux => {
+      this.getAllUsers()
+    })
+
+  }
+
+
+  /* borrarTodo() {
+    this.http.delete<myUser>(this.apiUrl).subscribe({
     });
     this.getAllUsers()
-  }
+  } */
+
+
 }
